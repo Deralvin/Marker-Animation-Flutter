@@ -24,25 +24,35 @@ class _HomeViewState extends State<HomeView> {
   int markering = 0;
   Marker selectedMarker;
 
+  var x1,y1,x2,y2,xfinal,yfinal;
   List colors = [Colors.red, Colors.green, Colors.yellow,Colors.blue,Colors.deepOrange];
   Random random = new Random();
   @override
   void initState() {
     super.initState();
     _marker = _markers[_markerIndex];
-    _timer = Timer.periodic(Duration(milliseconds: 1000), (_) {
+
+    _timer = Timer.periodic(Duration(seconds: 5), (_) {
       setState(() {
+
         markering = (markering + 1) % data[0].length;
         markers.removeWhere((value) => value.height==42.0);
         for (int i = 0; i< data.length;i++){
+          print(markering);
+            x1 = data[i][markering][0] % data[0].length;
+            y1 = data[i][markering][1] % data[0].length;
+            x2 = data[i][markering + 1][0] % data[0].length;
+            y2 = data[i][markering + 1][1] % data[0].length;
+
+          xfinal = x2 - x1;
+          yfinal = y2 - y1;
           markers.add(Marker(
             width: 42.0,
             height: 42.0,
             point: LatLng(data[i][markering][0],data[i][markering][1]),
-            builder: (ctx) => Container(
-              child: FlutterLogo(
-
-              ),
+            builder: (ctx) => Transform.rotate(
+              angle: xfinal/yfinal,
+              child: Image.asset('assets/busprov.png'),
             ),
           ));
         }
