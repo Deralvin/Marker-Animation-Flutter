@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 
-
-
 class HomeView extends StatefulWidget {
   static const String route = '/moving_markers';
 
@@ -24,34 +22,49 @@ class _HomeViewState extends State<HomeView> {
   int markering = 0;
   Marker selectedMarker;
 
-  var x1,y1,x2,y2,xfinal,yfinal;
-  List colors = [Colors.red, Colors.green, Colors.yellow,Colors.blue,Colors.deepOrange];
+  var x1, y1, x2, y2, xfinal, yfinal,theta,bearing;
+  List colors = [
+    Colors.red,
+    Colors.green,
+    Colors.yellow,
+    Colors.blue,
+    Colors.deepOrange
+  ];
   Random random = new Random();
   @override
   void initState() {
     super.initState();
     _marker = _markers[_markerIndex];
 
-    _timer = Timer.periodic(Duration(seconds: 5), (_) {
+    _timer = Timer.periodic(Duration(seconds: 2), (_) {
       setState(() {
-
         markering = (markering + 1) % data[0].length;
-        markers.removeWhere((value) => value.height==42.0);
-        for (int i = 0; i< data.length;i++){
+        markers.removeWhere((value) => value.height == 42.0);
+        for (int i = 0; i < data.length; i++) {
+          x1 = 0;
+          x2 = 0;
+          xfinal = 0;
+          y1 = 0;
+          y2 = 0;
+          yfinal = 0;
+          theta = 0;
+          bearing = 0;
           print(markering);
-            x1 = data[i][markering][0] % data[0].length;
-            y1 = data[i][markering][1] % data[0].length;
-            x2 = data[i][markering + 1][0] % data[0].length;
-            y2 = data[i][markering + 1][1] % data[0].length;
+          x1 = data[i][markering][0] % data[0].length;
+          y1 = data[i][markering][1] % data[0].length;
+          x2 = data[i][markering + 1][0] % data[0].length;
+          y2 = data[i][markering + 1][1] % data[0].length;
 
-          xfinal = x2 - x1;
-          yfinal = y2 - y1;
+          xfinal = (cos(x1)*sin(x2) - sin(x1)*cos(x1)*cos(y2 -y1));
+          yfinal = (sin(y2 - y1)*cos(x2));
+          theta = atan2(yfinal, xfinal);
+          bearing = (theta * 180/pi +360) % 360;
           markers.add(Marker(
             width: 42.0,
             height: 42.0,
-            point: LatLng(data[i][markering][0],data[i][markering][1]),
+            point: LatLng(data[i][markering][0], data[i][markering][1]),
             builder: (ctx) => Transform.rotate(
-              angle: xfinal/yfinal,
+              angle: bearing,
               child: Image.asset('assets/busprov.png'),
             ),
           ));
@@ -91,12 +104,11 @@ class _HomeViewState extends State<HomeView> {
                   zoom: 13.0,
                 ),
                 layers: [
-
                   TileLayerOptions(
                     tileProvider: CachedNetworkTileProvider(),
                     maxZoom: 20.0,
                     urlTemplate:
-                    'http://vectormap.pptik.id/styles/klokantech-basic/{z}/{x}/{y}.png',
+                        'http://vectormap.pptik.id/styles/klokantech-basic/{z}/{x}/{y}.png',
                   ),
                   MarkerLayerOptions(markers: markers)
                 ],
@@ -109,7 +121,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-  List<Marker> _markers = [
+List<Marker> _markers = [
   Marker(
     width: 42.0,
     height: 42.0,
@@ -228,8 +240,9 @@ var data = [
     [-6.936387, 107.595323],
     [-6.935405, 107.595696]
   ]
-] ;
-List<LatLng> data_bis =  [LatLng(-6.927220, 107.603813),
+];
+List<LatLng> data_bis = [
+  LatLng(-6.927220, 107.603813),
   LatLng(-6.927241, 107.714142),
   LatLng(-6.927307, 107.714787),
   LatLng(-6.927325, 107.715032),
@@ -237,5 +250,5 @@ List<LatLng> data_bis =  [LatLng(-6.927220, 107.603813),
   LatLng(-6.927411, 107.715893),
   LatLng(-6.926891, 107.715978),
   LatLng(-6.926722, 107.715997),
-  LatLng(-6.926506, 107.716010)];
-
+  LatLng(-6.926506, 107.716010)
+];
