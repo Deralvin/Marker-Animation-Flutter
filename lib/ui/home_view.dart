@@ -38,33 +38,19 @@ class _HomeViewState extends State<HomeView> {
 
     _timer = Timer.periodic(Duration(seconds: 2), (_) {
       setState(() {
+
         markering = (markering + 1) % data[0].length;
+
         markers.removeWhere((value) => value.height == 42.0);
         for (int i = 0; i < data.length; i++) {
-          x1 = 0;
-          x2 = 0;
-          xfinal = 0;
-          y1 = 0;
-          y2 = 0;
-          yfinal = 0;
-          theta = 0;
-          bearing = 0;
-          print(markering);
-          x1 = data[i][markering][0] % data[0].length;
-          y1 = data[i][markering][1] % data[0].length;
-          x2 = data[i][markering + 1][0] % data[0].length;
-          y2 = data[i][markering + 1][1] % data[0].length;
 
-          xfinal = (cos(x1)*sin(x2) - sin(x1)*cos(x1)*cos(y2 -y1));
-          yfinal = (sin(y2 - y1)*cos(x2));
-          theta = atan2(yfinal, xfinal);
-          bearing = (theta * 180/pi +360) % 360;
+         
           markers.add(Marker(
             width: 42.0,
             height: 42.0,
             point: LatLng(data[i][markering][0], data[i][markering][1]),
             builder: (ctx) => Transform.rotate(
-              angle: bearing,
+              angle: bearingRotate(data,i),
               child: Image.asset('assets/busprov.png'),
             ),
           ));
@@ -82,6 +68,40 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  double bearingRotate(List<List<List<double>>> data,int i){
+    x1 = 0;
+    x2 = 0;
+    xfinal = 0;
+    y1 = 0;
+    y2 = 0;
+    yfinal = 0;
+    theta = 0;
+    bearing = 0;
+
+    if(markering ==8 ) {
+      x1 = data[i][markering - 1][0] % data[0].length;
+      y1 = data[i][markering - 1][1] % data[0].length;
+      x2 = data[i][markering][0] % data[0].length;
+      y2 = data[i][markering][1] % data[0].length;
+
+      xfinal = (cos(x1)*sin(x2) - sin(x1)*cos(x1)*cos(y2 -y1));
+      yfinal = (sin(y2 - y1)*cos(x2));
+      theta = atan2(yfinal, xfinal);
+      bearing = (theta * 180/pi +360) % 360;
+      return bearing;
+    }
+
+    print('markering data $markering');
+    x1 = data[i][markering][0] % data[0].length;
+    y1 = data[i][markering][1] % data[0].length;
+    x2 = data[i][markering + 1][0] % data[0].length;
+    y2 = data[i][markering + 1][1] % data[0].length;
+    xfinal = (cos(x1)*sin(x2) - sin(x1)*cos(x1)*cos(y2 -y1));
+    yfinal = (sin(y2 - y1)*cos(x2));
+    theta = atan2(yfinal, xfinal);
+    bearing = (theta * 180/pi +360) % 360;
+    return bearing;
+  }
   @override
   void dispose() {
     super.dispose();
