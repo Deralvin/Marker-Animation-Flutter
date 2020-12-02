@@ -79,10 +79,10 @@ class _HomeViewState extends State<HomeView> {
     bearing = 0;
 
     if(markering ==8 ) {
-      x1 = data[i][markering - 1][0] % data[0].length;
-      y1 = data[i][markering - 1][1] % data[0].length;
-      x2 = data[i][markering][0] % data[0].length;
-      y2 = data[i][markering][1] % data[0].length;
+      x1 = data[i][markering - 1][0];
+      y1 = data[i][markering - 1][1];
+      x2 = data[i][markering][0];
+      y2 = data[i][markering][1];
 
       xfinal = (cos(x1)*sin(x2) - sin(x1)*cos(x1)*cos(y2 -y1));
       yfinal = (sin(y2 - y1)*cos(x2));
@@ -92,10 +92,10 @@ class _HomeViewState extends State<HomeView> {
     }
 
     print('markering data $markering');
-    x1 = data[i][markering][0] % data[0].length;
-    y1 = data[i][markering][1] % data[0].length;
-    x2 = data[i][markering + 1][0] % data[0].length;
-    y2 = data[i][markering + 1][1] % data[0].length;
+    x1 = data[i][markering][0];
+    y1 = data[i][markering][1];
+    x2 = data[i][markering + 1][0];
+    y2 = data[i][markering + 1][1];
     xfinal = (cos(x1)*sin(x2) - sin(x1)*cos(x1)*cos(y2 -y1));
     yfinal = (sin(y2 - y1)*cos(x2));
     theta = atan2(yfinal, xfinal);
